@@ -13,14 +13,15 @@ A basic Command-Line Interface (CLI) application that allows users to send and r
 
 **How to install and run the program:**
 - Set Up: Clone the repository and install dependencies.
+  - Ensure the Inquirer dependency version: ````npm install inquirer@8.2.5````
 - Configure: Add your Notion API token and database ID in the .env file.
 
   ````NOTION_KEY=your_notion_api_token````
   ````NOTION_DATABASE_ID=your_notion_database_id````
-- Run: Use the CLI to send and receive messages.  ````npm run````
+- Run: Use the CLI to send and receive messages.  ````npm start````
 
 **Source References:**
-- e.g. StackOverflow post about Node CLI applications, API docs, any open-source libraries).
+- e.g. StackOverflow post about Node CLI applications, API docs, any open-source libraries.
 
 **Future Improvements:**
 - Add a testing suite that tests the program’s correctness.
