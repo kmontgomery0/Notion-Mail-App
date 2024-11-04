@@ -23,10 +23,8 @@ async function sendMessage(sender, recipient, message) {
         },
       },
     });
-    // console.log("Message sent successfully!");
     return { success: true, data: response };
   } catch (error) {
-    // console.error("Failed to send message:", error);
     return { success: false, error: error.message };
   }
 }

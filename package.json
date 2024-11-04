@@ -4,8 +4,7 @@
   "description": "Internal Notion integration demo app using Express.js for a server.",
   "main": "index.js",
   "scripts": {
-    "start": "node index.js",
-    "run": "node index.js"
+    "start": "node index.js"
   },
   "dependencies": {
     "@notionhq/client": "^2.2.7",

@@ -77,23 +77,23 @@ const inquirer = require('inquirer');
 const { sendMessage, readMessages } = require('./notionClient');
 
 async function main() {
-  console.log("Welcome to Notion Mail CLI!");
+  console.log("Welcome to Notion Mail!");
 
   const { action } = await inquirer.prompt({
     name: 'action',
     type: 'list',
     message: 'Please select an option:',
     choices: [
-      { name: 'Send a message', value: 'send' },
-      { name: 'Read messages', value: 'read' }
+      { name: "Send: Send mail to a user", value: 'send' },
+      { name: "Read: Check a user's mail", value: 'read' }
     ],
   });
 
   if (action === 'send') {
     const { sender, recipient, message } = await inquirer.prompt([
-      { name: 'sender', message: 'Sender:', type: 'input' },
-      { name: 'recipient', message: 'Recipient:', type: 'input' },
-      { name: 'message', message: 'Message:', type: 'input' },
+      { name: 'sender', message: 'Sender:', type: 'input', validate: input => input ? true : 'Sender cannot be empty.'},
+      { name: 'recipient', message: 'Recipient:', type: 'input', validate: input => input ? true : 'Recipient cannot be empty.'},
+      { name: 'message', message: 'Message:', type: 'input', validate: input => input ? true : 'Message cannot be empty.'},
     ]);
     const result = await sendMessage(sender, recipient, message);
     if (result.success) {
@@ -106,14 +106,16 @@ async function main() {
       name: 'recipient',
       message: 'Recipient to check messages for:',
       type: 'input',
+      validate: input => input ? true : 'Recipient cannot be empty.'
     });
     const result = await readMessages(recipient);
-        if (result.success) {      if (result.data.length === 0) {
-            console.log(result.message); // "No messages found" message
+        if (result.success) {      
+            if (result.data.length === 0) {
+                console.log(result.message); // "No messages found" message
         } else {
-            console.log(`Messages for ${recipient}:`);
+            console.log(`${result.data.length} messages for ${recipient}:`);
             result.data.forEach((msg, index) => {
-            console.log(`\nMessage ${index + 1}:\nFrom: ${msg.sender}\nAt: ${msg.timestamp}\n${msg.message}`);
+            console.log(`\nMessage ${index + 1}:\nFrom: ${msg.sender}`);
             });
         }
     } else {
