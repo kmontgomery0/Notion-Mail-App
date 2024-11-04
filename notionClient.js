@@ -7,6 +7,7 @@ const databaseId = process.env.NOTION_DATABASE_ID;
 
 // Function to send a message (create a new page in the Notion database)
 async function sendMessage(sender, recipient, message) {
+  const currentTime = new Date().toISOString(); // current timestamp
   try {
     // Create a new page in the database with properties for Sender, Recipient, Message, and Timestamp
     const response = await notion.pages.create({
@@ -20,6 +21,9 @@ async function sendMessage(sender, recipient, message) {
         },
         'Recipient': {
           rich_text: [{ text: { content: recipient } }]
+        },
+        'Timestamp': {
+          date: {start: currentTime}
         },
       },
     });
@@ -50,6 +54,7 @@ async function readMessages(recipient) {
     const messages = response.results.map(page => ({
       sender: page.properties['Sender'].rich_text[0]?.text.content,
       message: page.properties['Message'].title[0]?.text.content,
+      timestamp: page.properties['Timestamp'].date?.start,
     }));
     return { success: true, data: messages };
   } catch (error) {
