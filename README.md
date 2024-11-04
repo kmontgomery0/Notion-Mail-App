@@ -8,7 +8,8 @@ A basic Command-Line Interface (CLI) application that allows users to send and r
 
 **Additional Improvements:**
 - Add timestamps to each of the messages that indicate when the message was sent.
-- Add functionality to delete messages.
+- Add functionality to delete message
+- Mark messages as Read/Unread to help users distinguish between new and previously read messages.
 
 **How to install and run the program:**
 - Set Up: Clone the repository and install dependencies.
@@ -24,7 +25,6 @@ A basic Command-Line Interface (CLI) application that allows users to send and r
 **Future Improvements:**
 - Add a testing suite that tests the program’s correctness.
 - Allow users to search messages by sender or specific keywords for easier navigation.
-- Mark messages as Read/Unread to help users distinguish between new and previously read messages.
 - Allow users to schedule messages to be sent at a future date.
 - Allow users to send messages with basic formatting (e.g., bold, italics).
 - Improve user experience with a more intuitive CLI design, or provide a web-based or Notion-based dashboard to view and manage messages visually.
