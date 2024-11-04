@@ -13,6 +13,8 @@ A basic Command-Line Interface (CLI) application that allows users to send and r
 **How to install and run the program:**
 - Set Up: Clone the repository and install dependencies.
 - Configure: Add your Notion API token and database ID in the .env file.
+  ````NOTION_KEY=your_notion_api_token
+NOTION_DATABASE_ID=your_notion_database_id````
 - Run: Use the CLI to send and receive messages.  ````npm run````
 
 **Source References:**
@@ -20,7 +22,11 @@ A basic Command-Line Interface (CLI) application that allows users to send and r
 
 **Future Improvements:**
 - Add a testing suite that tests the program’s correctness.
-- 
+- Allow users to search messages by sender or specific keywords for easier navigation.
+- Mark messages as Read/Unread to help users distinguish between new and previously read messages.
+- Allow users to schedule messages to be sent at a future date.
+- Allow users to send messages with basic formatting (e.g., bold, italics).
+- Improve user experience with a more intuitive CLI design, or provide a web-based or Notion-based dashboard to view and manage messages visually.
 
 **Product or technical choices (and why?):**
-- 
+- h
