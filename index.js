@@ -1,5 +1,5 @@
 const inquirer = require('inquirer');
-const { sendMessage, readMessages } = require('./notionClient');
+const { sendMessage, readMessages, deleteMessage, findPageIdByMessageId } = require('./notionClient');
 
 function formatTimestamp(timestamp) {
     const date = new Date(timestamp);
@@ -24,7 +24,8 @@ async function main() {
     message: 'Please select an option:',
     choices: [
       { name: "Send: Send mail to a user", value: 'send' },
-      { name: "Read: Check a user's mail", value: 'read' }
+      { name: "Read: Check a user's mail", value: 'read' },
+      { name: "Delete: Delete a specific message", value: 'delete' }
     ],
   });
 
@@ -76,7 +77,45 @@ async function main() {
     } else {
       console.error('Failed to retrieve messages:', result.error);
     }
+  } else if (action === 'delete') {
+    const { recipient } = await inquirer.prompt({
+        name: 'recipient',
+        message: 'Recipient to delete messages for:',
+        type: 'input',
+        validate: input => input ? true : 'Recipient cannot be empty.'
+      });
+  
+    // Fetch messages for the specified recipient
+    const result = await readMessages(recipient);
+    if (result.success && result.data.length > 0) {
+        // Prompt the user to select a message to delete
+        const { messageId } = await inquirer.prompt({
+          name: 'messageId',
+          type: 'list',
+          message: 'Select a message to delete:',
+          choices: result.data.map((msg, index) => ({
+            name: `Message ${index + 1} from ${msg.sender} on ${formatTimestamp(msg.timestamp)}: ${msg.message}`,
+            value: msg.messageId
+          })),
+        });
+
+        // Find the Notion Page ID using the selected Message ID
+        const findResult = await findPageIdByMessageId(messageId);
+        if (findResult.success) {
+            // Delete the message using the Notion page ID
+            const deleteResult = await deleteMessage(findResult.pageId);
+            if (deleteResult.success) {
+                console.log('Message deleted successfully!');
+            } else {
+                console.error('Failed to delete message:', deleteResult.error);
+            }
+        } else {
+            onsole.error(findResult.error);
+        }
+      } else {
+        console.log(result.message || 'No messages found to delete.');
+      }
+    }
   }
-}
 
 main();
