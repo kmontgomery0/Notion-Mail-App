@@ -8,7 +8,8 @@ A basic Command-Line Interface (CLI) application that allows users to send and r
 
 **Additional Improvements:**
 - Add timestamps to each of the messages that indicate when the message was sent.
-- Add functionality to delete message
+- Add functionality to read messages sorted from newest to oldest or oldest to newest.
+- Add functionality to delete message.
 - Mark messages as Read/Unread to help users distinguish between new and previously read messages.
 
 **How to install and run the program:**
@@ -21,14 +22,27 @@ A basic Command-Line Interface (CLI) application that allows users to send and r
 - Run: Use the CLI to send and receive messages.  ````npm start````
 
 **Source References:**
-- e.g. StackOverflow post about Node CLI applications, API docs, any open-source libraries.
+- https://developers.notion.com/docs
+- https://github.com/makenotion/notion-sdk-js
+- https://www.npmjs.com/package/inquirer
+- https://nodejs.org/docs/latest/api/
+- https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date
+- https://medium.com/@voltx180/a-beginners-guide-for-creating-command-line-programs-in-node-js-42d1ebfe9c08 
 
 **Future Improvements:**
 - Add a testing suite that tests the program’s correctness.
+  - Functional tests for message creation, retrieval, status, deletion (account for missing/existing fields, duplicates, accessing already read/deleted messages)
+  - Tests for error handling (like invalid message ID, API timeouts)
+  - Tests for CLI inputs and user actions
+  - Performance and load tests
 - Allow users to search messages by sender or specific keywords for easier navigation.
 - Allow users to schedule messages to be sent at a future date.
 - Allow users to send messages with basic formatting (e.g., bold, italics).
 - Improve user experience with a more intuitive CLI design, or provide a web-based or Notion-based dashboard to view and manage messages visually.
 
 **Product or technical choices (and why?):**
-- h
+- **Inquirer.js Library for CLI:** Used the Inquirer.js library to build an interactive command-line interface, providing a user-friendly experience without requiring a frontend. This library allows users to easily select options, enter message details, and navigate through the application.
+- **Structured Error Handling and Logging:** Implemented structured error handling with detailed logging to quickly identify issues and address them efficiently during app development and debugging. This approach ensures smooth operation and easier troubleshooting.
+- **Date Formatting for Readability:** Added a date formatting function to display timestamps in a more user-friendly format, because ISO string timestamps can be hard to read for end-users. Formatting dates into a more familiar structure improves readability and enhances the user experience when viewing message details in the CLI.
+- **Message Sorting Functionality:** Implemented sorting functionality to display messages either from newest to oldest or vice versa. This enhances user experience by allowing them to view messages in a preferred chronological order, giving users flexibilty and better control over the mail app.
+- **Unread/Read Status Tracking:** Introduced a Status property in the Notion database to track whether a message is "Read" or "Unread." This provides a simple way to manage the state of each message and integrates well with Notion's interface, allowing users to manually update the status if needed.
