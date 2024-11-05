@@ -29,6 +29,9 @@ async function sendMessage(sender, recipient, message) {
         'Message ID': {
           number: messageId
         },
+        'Status': { 
+          status: { name: 'Unread' } 
+        },
       },
     });
     return { success: true, data: response };
@@ -61,6 +64,7 @@ async function readMessages(recipient) {
       sender: page.properties['Sender'].rich_text[0]?.text.content,
       message: page.properties['Message'].title[0]?.text.content,
       timestamp: page.properties['Timestamp'].date?.start,
+      status: page.properties['Status']?.status?.name || 'Unread',
     }));
     return { success: true, data: messages };
   } catch (error) {
@@ -104,11 +108,27 @@ async function deleteMessage(pageId) {
     }
   }
 
+// Function to mark a message as Read based on Notion Page ID
+async function markAsRead(pageId) {
+    try {
+      await notion.pages.update({
+        page_id: pageId,
+        properties: {
+          'Status': { status: { name: 'Read' } },
+        },
+      });
+      return { success: true };
+    } catch (error) {
+      return { success: false, error: error.message };
+    }
+  }
+
 // Export functions for use in the main CLI file
 module.exports = {
   sendMessage,
   readMessages,
   deleteMessage,
   findPageIdByMessageId,
+  markAsRead,
 };
 

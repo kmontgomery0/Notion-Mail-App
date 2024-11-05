@@ -1,5 +1,5 @@
 const inquirer = require('inquirer');
-const { sendMessage, readMessages, deleteMessage, findPageIdByMessageId } = require('./notionClient');
+const { sendMessage, readMessages, deleteMessage, findPageIdByMessageId, markAsRead } = require('./notionClient');
 
 function formatTimestamp(timestamp) {
     const date = new Date(timestamp);
@@ -25,6 +25,7 @@ async function main() {
     choices: [
       { name: "Send: Send mail to a user", value: 'send' },
       { name: "Read: Check a user's mail", value: 'read' },
+      { name: "Mark as Read: Mark specific messages as read", value: 'mark_as_read' },
       { name: "Delete: Delete a specific message", value: 'delete' }
     ],
   });
@@ -71,13 +72,53 @@ async function main() {
             // Display messages in sorted order
             console.log(`${result.data.length} messages for ${recipient}:`);
             sortedMessages.forEach((msg, index) => {
-                console.log(`\nMessage ${index + 1}:\nFrom: ${msg.sender}\nAt: ${formatTimestamp(msg.timestamp)}\nMessage: ${msg.message}`);
+                console.log(`\nMessage ${index + 1} (${msg.status}):\nFrom: ${msg.sender}\nAt: ${formatTimestamp(msg.timestamp)}\nMessage: ${msg.message}`);
             });
         }
     } else {
       console.error('Failed to retrieve messages:', result.error);
     }
-  } else if (action === 'delete') {
+  } else if (action === 'mark_as_read') {
+    const { recipient } = await inquirer.prompt({
+        name: 'recipient',
+        message: 'Recipient to mark messages as read:',
+        type: 'input',
+        validate: input => input ? true : 'Recipient cannot be empty.'
+    });
+
+    // Fetch messages for the specified recipient
+    const result = await readMessages(recipient);
+    if (result.success && result.data.length > 0) {
+        // Prompt the user to select a message to mark as read
+        const { messageId } = await inquirer.prompt({
+            name: 'messageId',
+            type: 'list',
+            message: 'Select a message to mark as read:',
+            choices: result.data
+                .filter(msg => msg.status === 'Unread') // Only show unread messages
+                .map((msg, index) => ({
+                    name: `Message ${index + 1} from ${msg.sender} on ${formatTimestamp(msg.timestamp)}: ${msg.message}`,
+                    value: msg.messageId
+                })),
+        });
+
+        // Find the Notion Page ID using the selected Message ID
+        const findResult = await findPageIdByMessageId(messageId);
+        if (findResult.success) {
+            // Mark the message as read using the Notion page ID
+            const markResult = await markAsRead(findResult.pageId);
+            if (markResult.success) {
+                console.log('Message marked as read successfully!');
+            } else {
+                console.error('Failed to mark message as read:', markResult.error);
+            }
+        } else {
+            console.error(findResult.error);
+        }
+    } else {
+        console.log(result.message || 'No unread messages found to mark as read.');
+    }
+} else if (action === 'delete') {
     const { recipient } = await inquirer.prompt({
         name: 'recipient',
         message: 'Recipient to delete messages for:',
@@ -110,7 +151,7 @@ async function main() {
                 console.error('Failed to delete message:', deleteResult.error);
             }
         } else {
-            onsole.error(findResult.error);
+            console.error(findResult.error);
         }
       } else {
         console.log(result.message || 'No messages found to delete.');
