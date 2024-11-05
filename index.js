@@ -47,14 +47,30 @@ async function main() {
       type: 'input',
       validate: input => input ? true : 'Recipient cannot be empty.'
     });
+    const { sortOrder } = await inquirer.prompt({
+      name: 'sortOrder',
+      type: 'list',
+      message: 'How would you like to sort the messages?',
+      choices: [
+        {name: 'Newest first', value: 'newest'},
+        {name: 'Oldest first', value: 'oldest'}
+      ],
+    });
     const result = await readMessages(recipient);
         if (result.success) {      
             if (result.data.length === 0) {
                 console.log(result.message); // "No messages found" message
         } else {
+            // Sort messages based on user selection
+            const sortedMessages = result.data.sort((a,b) => {
+                const dateA = new Date(a.timestamp);
+                const dateB = new Date(b.timestamp);
+                return sortOrder === 'newest' ? dateB - dateA: dateA - dateB;
+            });
+            // Display messages in sorted order
             console.log(`${result.data.length} messages for ${recipient}:`);
-            result.data.forEach((msg, index) => {
-            console.log(`\nMessage ${index + 1}:\nFrom: ${msg.sender}\nAt: ${formatTimestamp(msg.timestamp)}\nMessage: ${msg.message}`);
+            sortedMessages.forEach((msg, index) => {
+                console.log(`\nMessage ${index + 1}:\nFrom: ${msg.sender}\nAt: ${formatTimestamp(msg.timestamp)}\nMessage: ${msg.message}`);
             });
         }
     } else {
