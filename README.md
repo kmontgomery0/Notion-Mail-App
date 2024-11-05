@@ -7,10 +7,10 @@ A basic Command-Line Interface (CLI) application that allows users to send and r
 - The app connects to a Notion database using the Notion API and securely reads from and writes to it based on user input from the CLI. All interactions are handled server-side, so private information remains secure.
 
 **Additional Improvements:**
-- Add timestamps to each of the messages that indicate when the message was sent.
-- Add functionality to read messages sorted from newest to oldest or oldest to newest.
-- Add functionality to delete message.
-- Mark messages as Read/Unread to help users distinguish between new and previously read messages.
+- Added timestamps to each of the messages that indicate when the message was sent.
+- Added functionality to read messages sorted from newest to oldest or oldest to newest.
+- Added functionality to delete message.
+- Added ability to mark messages as Read/Unread to help users distinguish between new and previously read messages.
 
 **How to install and run the program:**
 - Set Up: Clone the repository and install dependencies.
